@@ -10,8 +10,7 @@ _work/
 lark_auth_qr*.png
 
 # ===== 各 Agent / IDE 配置与缓存（工具产物，非项目资产） =====
-# 通用 agent 配置目录
-.agents/
+# 注：.agents/ 已纳入版本控制（lark-* skill 知识库，团队需同步）
 .claude/
 .crush/
 .factory/
@@ -30,9 +29,9 @@ lark_auth_qr*.png
 .trae/
 .zencoder/
 
-# skill 产物
-skills/
-skills-lock.json
+# skill 产物（仅根目录，不影响 .agents/skills/）
+/skills/
+/skills-lock.json
 
 # ===== 系统/编辑器 =====
 .DS_Store
@@ -41,3 +40,4 @@ Thumbs.db
 *.swo
 .vscode/
 .idea/
+output/*

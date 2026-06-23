@@ -1,7 +1,7 @@
 # AGENTS.md — jd-agent 运行时入口
 
 > **agent 每次运行时必读本文件。** 本文件是总索引，串联所有知识。
-> 详细知识在 `docs/` 和 `config/` 下，按需加载（见文末"加载顺序"）。
+> 详细知识在 `docs/` 和 `capabilities/` 下，按需加载（见文末"加载顺序"）。
 
 ---
 
@@ -94,7 +94,7 @@
 
 **5 步流程 + 必问清单 + 输出格式 + 标杆范例 + 边界**，全部规则在：
 
-> **`config/reasoning-rules.md`** ← 工作方式看这里
+> **`capabilities/reasoning-rules.md`** ← 工作方式看这里
 
 **标杆范例**（必看，演示铁律怎么落地）：用户说"招个采购给装备研发用"时，怎么先问、再拆、每条能力挂依据，见 reasoning-rules.md 第六节。
 
@@ -105,7 +105,7 @@
 ```
 启动时必读：
   1. AGENTS.md（本文件）
-  2. config/reasoning-rules.md（怎么拆解、怎么输出）
+  2. capabilities/reasoning-rules.md（怎么拆解、怎么输出）
 
 收到用户需求时按需读：
   3. docs/jd-profile-index.md      ← 找岗位、定大类
@@ -127,17 +127,41 @@ jd-agent/
 │   ├── jd-profile-index.md         ← 68岗画像索引（半稳定）
 │   ├── problem-definition.md       ← 问题定义（稳定，含采购锚点）
 │   └── jd-analysis.md              ← JD结构性问题分析（开发期存档）
-├── config/
-│   └── reasoning-rules.md          ← 拆解规则/输出格式（易变，开发期主改）
-└── 岗位职责说明书/                  ← JD 全文原始数据（按需加载）
+├── capabilities/                   ← agent 的能力（怎么思考 + 产出工具）
+│   ├── reasoning-rules.md          ← 拆解规则/输出格式（易变，开发期主改）
+│   └── jd-generator/               ← 【独立模块】JD 生成器（"打印机"）
+│       ├── template.md             ← JD 模板（纯markdown，公司六节结构）
+│       └── fill-rules.md           ← 填充规则（画像→模板字段的映射）
+├── output/                         ← 【唯一可写】agent 产出的 JD 存这里
+└── 岗位职责说明书/                  ← JD 全文原始数据（🔴 只读参考源，永不修改）
     └── <14个中心>/*.md
 ```
 
+**🔴 只读保护（铁律）：**
+- `岗位职责说明书/` 是**只读参考源**，**绝不修改**任何原文件。
+- agent 产出的 JD 一律写到 `output/`，命名 `{{岗位名称}}-JD-{{YYYY-MM-DD}}.md`。
+
 ---
 
-## 八、开发阶段备忘
+## 八、jd-generator 模块（独立打印机）
+
+**职责：** 接收 reasoning 收口后的画像数据，填充模板，产出标准格式 JD 到 `output/`。
+
+**为什么独立：** JD 生成是"打印"动作，和"拆解"（reasoning）解耦。
+- 改输出格式 → 只动 `capabilities/jd-generator/template.md`
+- 改填充逻辑 → 只动 `capabilities/jd-generator/fill-rules.md`
+- 改拆解逻辑 → 只动 `capabilities/reasoning-rules.md`
+- 三者互不影响。
+
+**何时调用：** reasoning 收口后，问用户"要不要产出标准 JD"，同意则调用。
+**详细规则：** `capabilities/jd-generator/fill-rules.md`。
+
+---
+
+## 九、开发阶段备忘
 
 - 当前是**开发反复测试阶段**，最终可能沉淀为 skill（未定）。
-- 知识源（docs/）相对稳定，改动少；拆解规则（config/）是开发期高频迭代对象。
-- 改规则只动 `config/reasoning-rules.md`，不会影响业务知识和岗位索引。
+- jd-generator 已是独立模块，未来搬 skill 时可天然成为一个子 skill。
+- 知识源（docs/）相对稳定，改动少；拆解规则（capabilities/）是开发期高频迭代对象。
+- 改规则只动 `capabilities/reasoning-rules.md`，不会影响业务知识和岗位索引。
 - 新增/修改 JD 后，同步更新 `docs/jd-profile-index.md`。
