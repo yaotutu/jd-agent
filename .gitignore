@@ -1,0 +1,43 @@
+# ===== 依赖 =====
+node_modules/
+bun.lockb
+
+# ===== 工具临时产物 =====
+# JD 导出脚本/清单/失败记录（数据采集中间产物）
+_work/
+
+# 飞书登录二维码（含认证信息，勿入库）
+lark_auth_qr*.png
+
+# ===== 各 Agent / IDE 配置与缓存（工具产物，非项目资产） =====
+# 通用 agent 配置目录
+.agents/
+.claude/
+.crush/
+.factory/
+.goose/
+.kilocode/
+.kiro/
+.mcpjam/
+.mux/
+.neovate/
+.openhands/
+.pi/
+.qoder/
+.qwen/
+.reasonix/
+.roo/
+.trae/
+.zencoder/
+
+# skill 产物
+skills/
+skills-lock.json
+
+# ===== 系统/编辑器 =====
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+.vscode/
+.idea/
