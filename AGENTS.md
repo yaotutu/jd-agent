@@ -115,6 +115,10 @@
   3. docs/jd-profile-index.md      ← 找岗位、定大类
   4. docs/business-context.md      ← 业务细节不清楚时
   5. 岗位职责说明书/<中心>/<文件>   ← 要某岗位全文细节时
+
+收到用户简历、要评估匹配度时读：
+  6. capabilities/resume-evaluator/rules.md        ← 评分方法论（画像→评分→算分）
+  7. capabilities/resume-evaluator/report-template.md ← 报告输出格式
 ```
 
 **不要一开始就全读**——会撑爆上下文。按需加载。
@@ -133,10 +137,13 @@ jd-agent/
 │   └── jd-analysis.md              ← JD结构性问题分析（📦存档，agent 无需读）
 ├── capabilities/                   ← agent 的能力（怎么思考 + 产出工具）
 │   ├── reasoning-rules.md          ← 拆解规则/输出格式（易变，开发期主改）
-│   └── jd-generator/               ← 【独立模块】JD 生成器（"打印机"）
-│       ├── template.md             ← JD 模板（纯markdown，公司六节结构）
-│       └── fill-rules.md           ← 填充规则（画像→模板字段的映射）
-├── output/                         ← 【唯一可写】agent 产出的 JD 存这里
+│   ├── jd-generator/               ← 【独立模块】JD 生成器（"打印机"）
+│   │   ├── template.md             ← JD 模板（纯markdown，公司六节结构）
+│   │   └── fill-rules.md           ← 填充规则（画像→模板字段的映射）
+│   └── resume-evaluator/           ← 【独立模块】简历评估器（"量尺"）
+│       ├── rules.md                ← 评分方法论（画像→评分项→0-4量表→算分）
+│       └── report-template.md      ← 评估报告模板（匹配度+等级+印证+风险）
+├── output/                         ← 【唯一可写】agent 产出的 JD 和简历评估报告存这里
 └── 岗位职责说明书/                  ← JD 全文原始数据（🔴 只读参考源，永不修改）
     └── <14个中心>/*.md
 ```
@@ -144,6 +151,7 @@ jd-agent/
 **🔴 只读保护（铁律）：**
 - `岗位职责说明书/` 是**只读参考源**，**绝不修改**任何原文件。
 - agent 产出的 JD 一律写到 `output/`，命名 `{{岗位名称}}-JD-{{YYYY-MM-DD}}.md`。
+- agent 产出的简历评估报告写到 `output/`，命名 `{{岗位名称}}-简历评估-{{候选人}}-{{YYYY-MM-DD}}.md`。
 
 ---
 
@@ -159,6 +167,25 @@ jd-agent/
 
 **何时调用：** reasoning 收口后，问用户"要不要产出标准 JD"，同意则调用。
 **详细规则：** `capabilities/jd-generator/fill-rules.md`。
+
+---
+
+## 八·2、resume-evaluator 模块（独立量尺）
+
+**职责：** 接收「岗位画像 + 候选人简历」，把画像里的核心/加分能力**反向转成评分项**，逐项打分，产出岗位匹配度报告（分数 + 推荐等级 + 逐项印证 + 风险提示）到 `output/`。
+
+**为什么独立：** 简历评估是"测量"动作，和"拆解"（reasoning）解耦——评分项不是固定的，而是从画像里自动生成，换任何岗位都通用。
+- 改评分方法论/量表 → 只动 `capabilities/resume-evaluator/rules.md`
+- 改报告格式 → 只动 `capabilities/resume-evaluator/report-template.md`
+- 改岗位画像（评什么） → 走 `reasoning-rules.md`，评分项自动跟着变
+- 三者互不影响。
+
+**何时调用：** 有了已收口的画像 + 用户提供简历时。
+**详细规则：** `capabilities/resume-evaluator/rules.md`。
+
+**与 jd-generator 平级**：两个独立模块共用 reasoning 的画像产出。
+- jd-generator = "打印机"（画像 → JD 文件）
+- resume-evaluator = "量尺"（画像 + 简历 → 匹配度报告）
 
 ---
 
