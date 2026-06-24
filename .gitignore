@@ -33,7 +33,11 @@ lark_auth_qr*.png
 /skills/
 /skills-lock.json
 
-# ===== 系统/编辑器 =====
+# ===== 个人信息（勿入库） =====
+# 候选人简历含个人隐私，绝不提交
+简历/
+*简历/
+采购简历/
 .DS_Store
 Thumbs.db
 *.swp
