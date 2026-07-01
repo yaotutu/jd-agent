@@ -44,5 +44,3 @@ Thumbs.db
 *.swo
 .vscode/
 .idea/
-output/*
-!output/README.md
